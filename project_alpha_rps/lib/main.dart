@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const SizedBox(height: 35),
             Text(
-              'Please choose your player and hit start!',
+              'Please choose your player and hit  start!',
               style: TextStyle(
                 shadows: [
                   Shadow(
@@ -205,7 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.background),
                 child: Text(
-                  'Start!',
+                  'START!',
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Theme.of(context).colorScheme.primary),

@@ -10,7 +10,8 @@ class SecondRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('second page'),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        title: Text('Ultimate Rock Paper Scissors!'),
       ),
       body: Center(
         child: Column(
