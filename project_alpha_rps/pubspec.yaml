@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_glow: ^0.3.0
+  flame: ^1.14.0
   flutter:
     sdk: flutter
 

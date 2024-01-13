@@ -1,8 +1,11 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:project_alpha_rps/ImageButton.dart';
+import 'package:project_alpha_rps/goliGamePage.dart';
 import 'package:project_alpha_rps/threeButtons.dart';
 import 'package:project_alpha_rps/secondPage.dart';
+import 'package:project_alpha_rps/goliGamePage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -194,6 +197,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   int glowingIndex = glowState.indexOf(
                       true); //taking the match boolean list cell for the image button
                   //print(glowingIndex);
+                  if (glowingIndex == -1) {
+                    glowingIndex = Random().nextInt(3);
+                  }
                   startGame(glowingIndex);
                   Navigator.push(
                     context,
@@ -210,6 +216,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontWeight: FontWeight.w600,
                       color: Theme.of(context).colorScheme.primary),
                 )),
+            ElevatedButton(
+                onPressed: () {
+                  //print('hey');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainGamePage(),
+                    ),
+                  );
+                },
+                child: Text('click to hey!')),
           ],
         ),
       ),
