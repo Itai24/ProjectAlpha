@@ -32,6 +32,8 @@ class SpriteRPS extends SpriteComponent
   RPS _type = RPS.rock;
   Vector2 speed = Vector2(0, 0);
 
+  Map<String, SpriteRPS> collisions = <String, SpriteRPS>{};
+
   SpriteRPS(RPS type) {
     _type = type;
   }
@@ -64,32 +66,15 @@ class SpriteRPS extends SpriteComponent
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    // if (other is ScreenHitbox) {
-    //   if (intersectionPoints.every((element) => element.x == 0)) {
-    //     if (speed.x < 0) {
-    //       speed.x = -speed.x;
-    //     }
-    //   } else if (intersectionPoints
-    //       .every((element) => element.x == gameRef.size.x)) {
-    //     if (speed.x > 0) {
-    //       speed.x = -speed.x;
-    //     }
-    //   } else if (intersectionPoints.every((element) => element.y == 0)) {
-    //     if (speed.y < 0) {
-    //       speed.y = -speed.y;
-    //     }
-    //   } else if (intersectionPoints
-    //       .every((element) => element.y == gameRef.size.y)) {
-    //     if (speed.y > 0) {
-    //       speed.y = -speed.y;
-    //     }
-    //   } else {
-    //     // edge case where it hits the corner
-    //     //  (100% of the time it will work 99% of the time)
-    //     speed.negate();
-    //   }
-    // }
+    if (other is SpriteRPS) {
+      if (collisions.containsKey(other.hashCode.toString())) {
+        // already handled the collision
+      } else {
+        collisions[other.hashCode.toString()] = other;
 
+        speed.negate();
+      }
+    }
     super.onCollision(intersectionPoints, other);
   }
 
@@ -110,6 +95,17 @@ class SpriteRPS extends SpriteComponent
     }
     angle = atan2(speed.x, -speed.y);
 
+    // handles removing finished collisions
+    List keys_of_finshed_collisions = [];
+    for (var other in collisions.entries) {
+      SpriteRPS otherObj = other.value;
+      if (distance(otherObj) > size.x) {
+        keys_of_finshed_collisions.add(other.key);
+      }
+    }
+
+    collisions
+        .removeWhere((key, value) => keys_of_finshed_collisions.contains(key));
     super.update(dt);
 
     // Update the position
