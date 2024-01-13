@@ -9,6 +9,11 @@ import 'package:project_alpha_rps/utils.dart';
 import 'rps.dart';
 
 class MainGame extends FlameGame with HasCollisionDetection, TapDetector {
+  int rockCntr = 0;
+  int paperCntr = 0;
+  int scissorsCntr = 0;
+
+  int totalCntr = 0;
   @override
   FutureOr<void> onLoad() async {
     super.onLoad();
@@ -17,7 +22,7 @@ class MainGame extends FlameGame with HasCollisionDetection, TapDetector {
   }
 
   @override
-  bool debugMode = true;
+  bool debugMode = false;
 
   @override
   void update(double dt) {

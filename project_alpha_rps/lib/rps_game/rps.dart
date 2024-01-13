@@ -32,6 +32,10 @@ class SpriteRPS extends SpriteComponent
   RPS _type = RPS.rock;
   Vector2 speed = Vector2(0, 0);
 
+  late Sprite rockSprite;
+  late Sprite paperSprite;
+  late Sprite scissorsSprite;
+
   Map<String, SpriteRPS> collisions = <String, SpriteRPS>{};
 
   SpriteRPS(RPS type) {
@@ -40,26 +44,22 @@ class SpriteRPS extends SpriteComponent
 
   @override
   FutureOr<void> onLoad() async {
-    switch (_type) {
-      case RPS.rock:
-        sprite = await Sprite.load('game-icons/${iconsNumber}rock.png');
-        break;
-      case RPS.paper:
-        sprite = await Sprite.load('game-icons/${iconsNumber}paper.png');
-        break;
-      case RPS.scissors:
-        sprite = await Sprite.load('game-icons/${iconsNumber}scissors.png');
-        break;
-
-      default:
-    }
-
     size = Vector2(50, 50);
 
     // Vector2 directionVec = Vector2(1, 1).normalized();
     speed = getRandomVector() * 300;
     anchor = Anchor.center;
     add(CircleHitbox(isSolid: true));
+
+    // loading sprites to cache
+    rockSprite = await Sprite.load('game-icons/${iconsNumber}rock.png');
+    paperSprite = await Sprite.load('game-icons/${iconsNumber}paper.png');
+    scissorsSprite = await Sprite.load('game-icons/${iconsNumber}scissors.png');
+    sprite = rockSprite;
+
+    // adding to hand counters
+    gameRef.totalCntr++;
+    addRPSToCntr(_type);
 
     return super.onLoad();
   }
@@ -71,8 +71,15 @@ class SpriteRPS extends SpriteComponent
         // already handled the collision
       } else {
         collisions[other.hashCode.toString()] = other;
-
         speed.negate();
+
+        // handle switching teams logic
+        if (isLosing(other._type)) {
+          
+          removeRPSToCntr(_type);
+          addRPSToCntr(other._type);
+          _type = other._type;
+        }
       }
     }
     super.onCollision(intersectionPoints, other);
@@ -106,14 +113,88 @@ class SpriteRPS extends SpriteComponent
 
     collisions
         .removeWhere((key, value) => keys_of_finshed_collisions.contains(key));
-    super.update(dt);
 
     // Update the position
     position.add(speed * dt);
+
+    super.update(dt);
   }
 
   @override
   void render(Canvas canvas) {
+    switch (_type) {
+      case RPS.rock:
+        sprite = rockSprite;
+        break;
+      case RPS.paper:
+        sprite = paperSprite;
+        break;
+      case RPS.scissors:
+        sprite = scissorsSprite;
+        break;
+
+      default:
+    }
     super.render(canvas);
+  }
+
+  void addRPSToCntr(RPS type) {
+    switch (type) {
+      case RPS.rock:
+        gameRef.rockCntr += 1;
+        break;
+      case RPS.paper:
+        gameRef.paperCntr += 1;
+        break;
+      case RPS.scissors:
+        gameRef.scissorsCntr += 1;
+        break;
+
+      default:
+    }
+  }
+
+  void removeRPSToCntr(RPS type) {
+    switch (type) {
+      case RPS.rock:
+        gameRef.rockCntr -= 1;
+        break;
+      case RPS.paper:
+        gameRef.paperCntr -= 1;
+        break;
+      case RPS.scissors:
+        gameRef.scissorsCntr -= 1;
+        break;
+
+      default:
+    }
+  }
+
+  bool isLosing(typeToBeat) {
+    if (_type == typeToBeat) {
+      return false;
+    }
+    // if you're rock
+    if (_type == RPS.rock && typeToBeat == RPS.paper) {
+      return true;
+    }
+    if (_type == RPS.rock && typeToBeat == RPS.scissors) {
+      return false;
+    }
+    // if you're paper
+    if (_type == RPS.paper && typeToBeat == RPS.scissors) {
+      return true;
+    }
+    if (_type == RPS.paper && typeToBeat == RPS.rock) {
+      return false;
+    }
+    // if you're scissors
+    if (_type == RPS.scissors && typeToBeat == RPS.rock) {
+      return true;
+    }
+    if (_type == RPS.scissors && typeToBeat == RPS.paper) {
+      return false;
+    }
+    throw Exception();
   }
 }

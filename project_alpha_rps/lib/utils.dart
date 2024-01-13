@@ -2,6 +2,8 @@
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:project_alpha_rps/rps_game/main_game.dart';
+import 'package:project_alpha_rps/rps_game/rps.dart';
 
 //
 // returns a random vector
@@ -12,18 +14,19 @@ Vector2 getRandomVector() {
 }
 
 class DynamicTextComponent extends TextComponent {
-  final FlameGame game;
+  final MainGame game;
 
   DynamicTextComponent(this.game)
       : super(
           text: '',
-          position: Vector2(100, game.size.y - 50), // Set initial position
+          position: Vector2(50, game.size.y - 50), // Set initial position
           // Additional text styling options here
         );
 
   @override
   void update(double dt) {
     super.update(dt);
-    text = 'hands: ${game.children.length - 4}';
+    text =
+        'rocks: ${game.rockCntr}, papers: ${game.paperCntr}, scissors: ${game.scissorsCntr}';
   }
 }
